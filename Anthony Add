@@ -6,6 +6,7 @@ class Events:
         self.day = {
             "Ballroom": {},
             "2500": {"Oval"},
+            "2100": {"Ballroom"},
             "2100A": {"Ballroom"},
             "2100AB": {"Ballroom"},
             "2100ABC": {"Ballroom"},
