@@ -37,7 +37,15 @@ class Events:
             "MLK Plaza": {"MLK Plaza"},
             "Bulls Patio": {"Bulls Patio"},
             "Atrium": {"Atrium"},
-            "MSC OS MSC N Fire Lane": {"Open Bollards"}
+            "MSC OS MSC N Fire Lane": {"Open Bollards"},
+            "Plaza": {"Plaza"},
+            "Showcase Table M": {"Showcase Table M"},
+            "North Entrance": {"North Entrance"},
+            "Showcase Table E": {"Showcase Table M"},
+            "Showcase Table N": {"Showcase Table M"},
+            "4111": {"4111"},
+            "Top of the Palms": {"Top of the Palms"},
+            "Crsnt Hill": {"Crsnt Hill"},
         }
 
 def search_pdf(file_path, search_string):
@@ -58,10 +66,16 @@ def search_pdf(file_path, search_string):
                     next_lines = [line.strip() for line in next_lines]  
                     for next_line in next_lines:
                         next_line_numbers = re.findall(r'\d+', next_line)
+                        alpha = True
                         for number in next_line_numbers:
-                            if number in events.day:  
+                            if number in events.day:
+                                alpha = False  
                                 event_info = events.day[number]
                                 found_events.append((hour_line, next_line, f"Event {number}"))
+                        if alpha:
+                            for res_space in events.day:
+                                if res_space in next_line:
+                                    found_events.append((hour_line, next_line, f"Event {res_space}"))
                     i = i+3
                 else:
                     i+=1
@@ -70,7 +84,7 @@ def search_pdf(file_path, search_string):
 
 
 def main():
-    file_path = r'C:\Users\suraj\Downloads\05.14.2024 Setup Worksheet.pdf'
+    file_path = r"C:\Users\suraj\Downloads\04.9.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
     # print(found_events)
