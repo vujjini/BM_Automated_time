@@ -46,6 +46,7 @@ class Events:
             "4111": {"4111"},
             "Top of the Palms": {"Top of the Palms"},
             "Crsnt Hill": {"Crsnt Hill"},
+            "MLK Stage": {"MLK Stage"}
         }
 
 def search_pdf(file_path, search_string):
@@ -74,11 +75,19 @@ def search_pdf(file_path, search_string):
                             if number in events.day:
                                 alpha = False  
                                 event_info = events.day[number]
-                                found_events.append((hour_line, next_line, f"Event {number}"))
+                                temp_dict = {}
+                                temp_dict["hour_line"] = hour_line
+                                temp_dict["next_line"] = next_line
+                                temp_dict["event space"] = f"Event {number}"
+                                found_events.append(temp_dict)
                         if alpha:
                             for res_space in events.day:
                                 if res_space in next_line:
-                                    found_events.append((hour_line, next_line, f"Event {res_space}"))
+                                    temp_dict = {}
+                                    temp_dict["hour_line"] = hour_line
+                                    temp_dict["next_line"] = next_line
+                                    temp_dict["event space"] = f"Event {res_space}"
+                                    found_events.append(temp_dict)
                     i = i+3
                 else:
                     i+=1
@@ -86,23 +95,23 @@ def search_pdf(file_path, search_string):
     return found_events
 
 
+
 def main():
-    file_path = r"C:\Users\suraj\Downloads\04.9.2024 Setup Worksheet.pdf"
+    file_path = r"C:\Users\suraj\Downloads\04.05.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
-    # for i in found_events:
-    #     print(i)
-    #     print()
+    for i in found_events:
+        print(i)
 
-    if found_events:
-        print("Found events:")
-        for hour_line, next_line, event_info in found_events:
-            print(f"Hour: {hour_line}")
-            print(f"Next Line: {next_line}")
-            print(f"Event: {event_info}")
-            print()
-    else:
-        print("No events found.")
+    # if found_events:
+    #     print("Found events:")
+    #     for hour_line, next_line, event_info in found_events:
+    #         print(f"Hour: {hour_line}")
+    #         print(f"Next Line: {next_line}")
+    #         print(f"Event: {event_info}")
+    #         print()
+    # else:
+    #     print("No events found.")
 
 if __name__ == "__main__":
     main()
