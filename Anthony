@@ -46,7 +46,9 @@ class Events:
             "4111": {"4111"},
             "Top of the Palms": {"Top of the Palms"},
             "Crsnt Hill": {"Crsnt Hill"},
-            "MLK Stage": {"MLK Stage"}
+            "MLK Stage": {"MLK Stage"},
+            "3308": {"3308"},
+            "MSC Center Gallery": {"MSC Center Gallery"}
         }
 
 def search_pdf(file_path, search_string):
@@ -80,6 +82,9 @@ def search_pdf(file_path, search_string):
                                 temp_dict["next_line"] = next_line
                                 temp_dict["event space"] = f"Event {number}"
                                 found_events.append(temp_dict)
+                                break
+                        if alpha == False:
+                            break
                         if alpha:
                             for res_space in events.day:
                                 if res_space in next_line:
@@ -97,11 +102,11 @@ def search_pdf(file_path, search_string):
 
 
 def main():
-    file_path = r"C:\Users\suraj\Downloads\04.05.2024 Setup Worksheet.pdf"
+    file_path = r"C:\Users\suraj\Downloads\04.11.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
     for i in found_events:
-        print(i)
+        print(i['event space'])
 
     # if found_events:
     #     print("Found events:")
