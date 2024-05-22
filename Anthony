@@ -71,6 +71,8 @@ def search_pdf(file_path, search_string):
                     hour_line = line.strip()  
                     next_lines = [line.strip() for line in next_lines]  
                     for next_line in next_lines:
+                        if ((len(next_line) == 12) and (next_line[0] == '4')):
+                            continue
                         next_line_numbers = re.findall(r'\d+', next_line)
                         alpha = True
                         for number in next_line_numbers:
@@ -102,7 +104,7 @@ def search_pdf(file_path, search_string):
 
 
 def main():
-    file_path = r"C:\Users\suraj\Downloads\04.11.2024 Setup Worksheet.pdf"
+    file_path = r"C:\Users\suraj\Downloads\04.23.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
     for i in found_events:
