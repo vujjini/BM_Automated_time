@@ -46,6 +46,9 @@ class Events:
             "4111": {"4111"},
             "Top of the Palms": {"Top of the Palms"},
             "Crsnt Hill": {"Crsnt Hill"},
+            "MLK Stage": {"MLK Stage"},
+            "3308": {"3308"},
+            "MSC Center Gallery": {"MSC Center Gallery"}
         }
 
 def search_pdf(file_path, search_string):
@@ -60,22 +63,38 @@ def search_pdf(file_path, search_string):
             i = 0
             while i < len(lines):
                 line = lines[i]
-                if len(line) >= 7 and (line[0].isdigit() and (("AM" in line) or ("PM" in line))) and (line[7] == "M" or line[6] == "M"):
-                    next_lines = lines[i + 1:i + 3] 
+                # if page_num == 23:
+                #     print(line)
+                # if len(line) >= 7 and ((("AM" in line) or ("PM" in line))) and (line[9] == "M" or line[8] == "M" or line[7] == "M" or line[6] == "M"):
+                if ((len(re.findall("AM|PM", line)) > 0) and (len(re.findall("Banquet|Stock|Custom|U-Shape|Theatre|Conference|Classroom|Hollow", line)) > 0)):
+                    next_lines = lines[i + 1:i + 10]
                     hour_line = line.strip()  
                     next_lines = [line.strip() for line in next_lines]  
                     for next_line in next_lines:
+                        if ((len(next_line) == 12) and (next_line[0] == '4')):
+                            continue
                         next_line_numbers = re.findall(r'\d+', next_line)
                         alpha = True
                         for number in next_line_numbers:
                             if number in events.day:
                                 alpha = False  
                                 event_info = events.day[number]
-                                found_events.append((hour_line, next_line, f"Event {number}"))
+                                temp_dict = {}
+                                temp_dict["hour_line"] = hour_line
+                                temp_dict["next_line"] = next_line
+                                temp_dict["event space"] = f"Event {number}"
+                                found_events.append(temp_dict)
+                                break
+                        if alpha == False:
+                            break
                         if alpha:
                             for res_space in events.day:
                                 if res_space in next_line:
-                                    found_events.append((hour_line, next_line, f"Event {res_space}"))
+                                    temp_dict = {}
+                                    temp_dict["hour_line"] = hour_line
+                                    temp_dict["next_line"] = next_line
+                                    temp_dict["event space"] = f"Event {res_space}"
+                                    found_events.append(temp_dict)
                     i = i+3
                 else:
                     i+=1
@@ -83,21 +102,23 @@ def search_pdf(file_path, search_string):
     return found_events
 
 
+
 def main():
-    file_path = r"C:\Users\suraj\Downloads\04.9.2024 Setup Worksheet.pdf"
+    file_path = r"C:\Users\suraj\Downloads\03.22.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
-    # print(found_events)
+    for i in found_events:
+        print(i['event space'])
 
-    if found_events:
-        print("Found events:")
-        for hour_line, next_line, event_info in found_events:
-            print(f"Hour: {hour_line}")
-            print(f"Next Line: {next_line}")
-            print(f"Event: {event_info}")
-            print()
-    else:
-        print("No events found.")
+    # if found_events:
+    #     print("Found events:")
+    #     for hour_line, next_line, event_info in found_events:
+    #         print(f"Hour: {hour_line}")
+    #         print(f"Next Line: {next_line}")
+    #         print(f"Event: {event_info}")
+    #         print()
+    # else:
+    #     print("No events found.")
 
 if __name__ == "__main__":
     main()
