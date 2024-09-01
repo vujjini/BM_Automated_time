@@ -121,7 +121,9 @@ def set_times(events):
 
 
 
+
 def main():
+
     file_path = r"C:\Users\suraj\Downloads\04.03.2024 Setup Worksheet.pdf"
     search_string = '27'
     found_events = search_pdf(file_path, search_string)
