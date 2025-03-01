@@ -1,15 +1,11 @@
-# turn this whole thing into a flask app. create a helper file to store the necessary functions. connect to a db or create one here.  
-# create an endpoint that essentially connects with the frontend in the future. execute all the sql commands in this endpoint and create functions
-# that take in inputs from the database and perform the tasks. 
-
-
 import PyPDF2
 import re
+
 
 class Events:
     def __init__(self):
         self.day = {
-            "Ballroom": {},
+            "Ballroom": {""},
             "2500": {"Oval"},
             "2100": {"Ballroom"},
             "2100A": {"Ballroom"},
@@ -56,7 +52,7 @@ class Events:
             "MSC Center Gallery": {"MSC Center Gallery"}
         }
 
-def search_pdf(file_path, search_string):
+def search_pdf(file_path):
     events = Events() 
     found_events = []
 
@@ -74,6 +70,10 @@ def search_pdf(file_path, search_string):
                 if ((len(re.findall("AM|PM", line)) > 0) and (len(re.findall("Banquet|Stock|Custom|U-Shape|Theatre|Conference|Classroom|Hollow", line)) > 0)):
                     next_lines = lines[i + 1:i + 10]
                     hour_line = line.strip()  
+                    pattern = r"\b\d{1,2}:\d{2} [AP]M\b"
+                    match = re.findall(pattern, hour_line)
+                    start_time = match[0]
+                    end_time = match[1]
                     next_lines = [line.strip() for line in next_lines]  
                     for next_line in next_lines:
                         if ((len(next_line) == 12) and (next_line[0] == '4')):
@@ -82,12 +82,13 @@ def search_pdf(file_path, search_string):
                         alpha = True
                         for number in next_line_numbers:
                             if number in events.day:
-                                alpha = False  
+                                alpha = False
                                 event_info = events.day[number]
                                 temp_dict = {}
-                                temp_dict["hour_line"] = hour_line
+                                temp_dict["start_time"] = start_time
+                                temp_dict["end_time"] = end_time
                                 temp_dict["next_line"] = next_line
-                                temp_dict["event space"] = f"Event {number}"
+                                temp_dict["event space"] = number
                                 found_events.append(temp_dict)
                                 break
                         if alpha == False:
@@ -96,9 +97,10 @@ def search_pdf(file_path, search_string):
                             for res_space in events.day:
                                 if res_space in next_line:
                                     temp_dict = {}
-                                    temp_dict["hour_line"] = hour_line
+                                    temp_dict["start_time"] = start_time
+                                    temp_dict["end_time"] = end_time
                                     temp_dict["next_line"] = next_line
-                                    temp_dict["event space"] = f"Event {res_space}"
+                                    temp_dict["event space"] = res_space
                                     found_events.append(temp_dict)
                     i = i+3
                 else:
@@ -106,39 +108,7 @@ def search_pdf(file_path, search_string):
 
     return found_events
 
-def set_times(events):
-    set = {}
-    pattern = r"\b\d{1,2}:\d{2} [AP]M\b"
-    # this is for outdoor events
-    for i in events:
-        match = re.search(pattern, i["hour_line"])
-        res_time = match.group()
 
-
-# 
-
-    return set
-
-
-
-
-def main():
-
-    file_path = r"C:\Users\suraj\Downloads\04.03.2024 Setup Worksheet.pdf"
-    search_string = '27'
-    found_events = search_pdf(file_path, search_string)
-    for i in found_events:
-        print(i)
-
-    # if found_events:
-    #     print("Found events:")
-    #     for hour_line, next_line, event_info in found_events:
-    #         print(f"Hour: {hour_line}")
-    #         print(f"Next Line: {next_line}")
-    #         print(f"Event: {event_info}")
-    #         print()
-    # else:
-    #     print("No events found.")
-
-if __name__ == "__main__":
-    main()
+# timesheet = search_pdf(r"C:\Users\suraj\Downloads\04.03.2024 Setup Worksheet.pdf")
+# for i in timesheet:
+#     print(i)
